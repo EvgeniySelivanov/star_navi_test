@@ -21,17 +21,17 @@ import { pendingReducer, rejectedReducer } from '../../utils/store';
 // }
 
 interface HeroesState{
-  heroes:number[],
+  data: any;
   error: string | null;
 }
 interface GetHeroesResponse {
-  data: number[];
+  data: any;
   status: number;
 }
 const HEROES_SLICE_NAME = 'heroes';
 
 const initialState: HeroesState = {
-  heroes: [],
+  data:{},
   error: null,
 };
 
@@ -52,7 +52,7 @@ export const getHeroes = createAsyncThunk<GetHeroesResponse, string>(
 const extraReducers = (builder: any) => {
   builder.addCase(getHeroes.pending, pendingReducer);
   builder.addCase(getHeroes.fulfilled, (state:HeroesState, action: PayloadAction<GetHeroesResponse>) => {
-    state.heroes = action.payload.data;
+    state.data = action.payload.data;
     state.error = null;
   });
   builder.addCase(getHeroes.rejected, rejectedReducer);
