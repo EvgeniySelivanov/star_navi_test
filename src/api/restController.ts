@@ -8,7 +8,6 @@ interface GetInfoResponse {
   data: number[];
   status: number;
 }
-
 export const getInfo = async (address:string): Promise<GetInfoResponse> => {
   try {
     const response = await http.get(
