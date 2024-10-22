@@ -7,18 +7,20 @@ import ReactFlow, {
   Edge,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { EnrichedHero } from '../interfaces';
+import { EnrichedHero, Film, Starship } from '../interfaces';
 
 interface HeroGraphProps {
-  hero: EnrichedHero | null;  // Выбранный герой
+  hero: EnrichedHero | null;  // The chosen hero
 }
 
+type SelectedItem = EnrichedHero | Film | Starship | null; // Type for storing information about the selected element
+
 const HeroGraph: React.FC<HeroGraphProps> = ({ hero }) => {
-  const [selectedFilm, setSelectedFilm] = useState<string | null>(null); // Для хранения выбранного фильма
+  const [selectedItem, setSelectedItem] = useState<SelectedItem>(null); // To store the selected element (hero, movie or ship)
 
   if (!hero) return null;
 
-  // Создаем узлы для героя, фильмов и кораблей
+  // We create nodes for the hero, films and ships
   const nodes: Node[] = [
     {
       id: `hero-${hero.name}`,
@@ -40,7 +42,7 @@ const HeroGraph: React.FC<HeroGraphProps> = ({ hero }) => {
     })),
   ];
 
-  // Связываем героя с фильмами
+  // Linking the hero to the films
   const edges: Edge[] = [
     ...hero.heroFilms.map((film) => ({
       id: `hero-${hero.name}-film-${film.title}`,
@@ -50,36 +52,95 @@ const HeroGraph: React.FC<HeroGraphProps> = ({ hero }) => {
     })),
   ];
 
-  // Связываем корабли с фильмом только при выборе фильма
-  const filmEdges: Edge[] =
-    selectedFilm
-      ? hero.heroStarships.map((starship) => ({
-          id: `film-${selectedFilm}-starship-${starship.name}`,
-          source: `film-${selectedFilm}`,
-          target: `starship-${starship.name}`,
-          type: 'default',
-        }))
-      : [];
+  // Linking the ships to the film
+  const filmEdges: Edge[] = hero.heroFilms.map((film) =>
+    hero.heroStarships.map((starship) => ({
+      id: `film-${film.title}-starship-${starship.name}`,
+      source: `film-${film.title}`,
+      target: `starship-${starship.name}`,
+      type: 'default',
+    }))
+  ).flat();
 
-  // Обработчик клика на узел фильма
+  // Node click handler
   const onNodeClick = (_: React.MouseEvent, node: Node) => {
-    if (node.id.startsWith('film-')) {
+    if (node.id.startsWith('hero-')) {
+      setSelectedItem(hero); //The hero has been chosen
+    } else if (node.id.startsWith('film-')) {
       const filmTitle = node.id.replace('film-', '');
-      setSelectedFilm(filmTitle); // Устанавливаем выбранный фильм
+      const selectedFilm = hero.heroFilms.find((film) => film.title === filmTitle);
+      setSelectedItem(selectedFilm || null); // Movie selected
+    } else if (node.id.startsWith('starship-')) {
+      const starshipName = node.id.replace('starship-', '');
+      const selectedStarship = hero.heroStarships.find((starship) => starship.name === starshipName);
+      setSelectedItem(selectedStarship || null); //The ship has been selected
     }
   };
 
+  //Display information about the selected item in the sidebar
+  const renderSidebarInfo = () => {
+    if (!selectedItem) return <div>No item selected</div>;
+
+    // Check if the selected element is a hero
+    if ('name' in selectedItem && 'heroFilms' in selectedItem) {
+      return (
+        <>
+          <h3>Hero: {selectedItem.name}</h3>
+          <p>Number of films: {selectedItem.heroFilms.length}</p>
+          <p>Number of starships: {selectedItem.heroStarships.length}</p>
+          <p>Birth year: {selectedItem.birth_year}</p>
+          <p>Height: {selectedItem.height}</p>
+          <p>Gender: {selectedItem.gender}</p>
+
+        </>
+      );
+    }
+
+    //Check if the selected item is a movie
+    if ('title' in selectedItem) {
+      return (
+        <>
+          <h3>Film: {selectedItem.title}</h3>
+          <p>Episode: {selectedItem.episode_id}</p>
+          <p>Release date: {selectedItem.release_date}</p>
+          <p>Director: {selectedItem.director}</p>
+          <p>Producer: {selectedItem.producer}</p>
+        </>
+      );
+    }
+
+    // Check if the selected element is a ship
+    if ('model' in selectedItem) {
+      return (
+        <>
+          <h3>Starship: {selectedItem.name}</h3>
+          <p>Model: {selectedItem.model}</p>
+          <p>Manufacturer: {selectedItem.manufacturer}</p>
+          <p>Hyperdrive rating: {selectedItem.hyperdrive_rating}</p>
+        </>
+      );
+    }
+
+    return <div>No details available</div>;
+};
+
   return (
-    <div style={{ height: '500px', width: '100%' }}>
-      <ReactFlow
-        nodes={nodes}
-        edges={[...edges, ...filmEdges]} // Добавляем связи к кораблям только для выбранного фильма
-        onNodeClick={onNodeClick} // Добавляем обработчик клика на узел
-      >
-        <MiniMap />
-        <Controls />
-        <Background />
-      </ReactFlow>
+    <div style={{ display: 'flex', height: '500px', width: '100%',margin:'auto'}}>
+      <div style={{ flex: 1 }}>
+        <ReactFlow
+          nodes={nodes}
+          edges={[...edges, ...filmEdges]} // Adding connections to ships
+          onNodeClick={onNodeClick} // Add a click handler to the node
+          defaultViewport={{x: 100, y: 0, zoom: 1}}
+        >
+          <MiniMap />
+          <Controls />
+          <Background />
+        </ReactFlow>
+      </div>
+      <div style={{ width: '300px', padding: '10px', borderLeft: '1px solid #ccc' }}>
+        {renderSidebarInfo()}
+      </div>
     </div>
   );
 };

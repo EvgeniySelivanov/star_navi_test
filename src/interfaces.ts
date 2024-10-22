@@ -1,62 +1,34 @@
-// export interface Hero {
-//   birth_year: string;
-//   eye_color: string;
-//   films: number[];
-//   gender: string;
-//   hair_color: string;
-//   height: string;
-//   homeworld: number;
-//   mass: string;
-//   name: string;
-//   skin_color: string;
-//   created: string;
-//   edited: string;
-//   species: number[];
-//   starships: number[];
-//   url: string;
-//   vehicles: number[];
-//   heroFilms?: Film[];
-//   heroStarships?: Starship[];
-// }
-
-// export interface Film {
-//   id: number;
-//   characters: number[];
-//   created: string;
-//   director: string;
-//   edited: string;
-//   episode_id: number;
-//   title: string;
-//   url: string;
-// }
-
-// export interface Starship {
-//   id: number;
-//   name: string;
-//   model: string;
-//   starship_class: string;
-//   films: number[];
-//   url: string;
-// }
-
-
 export interface Hero {
-  name: string;
+  birth_year: string;
   films: number[];
+  gender: string;
+  height: string;
+  name: string;
   starships: number[];
+  heroFilms?: Film[];
+  heroStarships?: Starship[];
 }
 
 export interface Film {
-  id:number;
+  id: number;
+  director: string;
   episode_id: number;
+  release_date:string;
+  producer:string;
   title: string;
 }
 
 export interface Starship {
-  id:number;
+  id: number;
+  hyperdrive_rating:string;
+  manufacturer:string;
   name: string;
+  model: string;
+  films: number[];
   url: string;
 }
+
+
 
 export interface EnrichedHero extends Hero {
   heroFilms: Film[];
