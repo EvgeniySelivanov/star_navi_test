@@ -6,65 +6,11 @@ import { getShips } from '../store/slices/shipsSlice';
 import {
   Box,
   CircularProgress,
-  Button,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
 } from '@mui/material';
+import { EnrichedHero,Hero,Film,Starship } from '../interfaces';
 import { useAppDispatch, useAppSelector } from '../utils/hooks';
 import CONSTANTS from '../constants';
-
-const btnStyle = {
-  maxWidth: '200px',
-  width: '100%',
-};
-
-interface Hero {
-  birth_year: string;
-  eye_color: string;
-  films: number[];
-  gender: string;
-  hair_color: string;
-  height: string;
-  homeworld: number;
-  mass: string;
-  name: string;
-  skin_color: string;
-  created: string;
-  edited: string;
-  species: number[];
-  starships: number[];
-  url: string;
-  vehicles: number[];
-  heroFilms?: Film[];
-  heroStarships?: Starship[];
-}
-
-interface Film {
-  id: number;
-  characters: number[];
-  created: string;
-  director: string;
-  edited: string;
-  episode_id: number;
-  title: string;
-  url: string;
-}
-
-interface Starship {
-  id: number;
-  name: string;
-  model: string;
-  starship_class: string;
-  films: number[];
-  url: string;
-}
-
+import HeroesList from '../components/HeroesList';
 const Home = () => {
   const [pageNumber, setPageNumber] = useState(1);
   const { count, results: heroes } = useAppSelector(
@@ -72,7 +18,7 @@ const Home = () => {
   );
   const { results: films } = useAppSelector((state) => state.films.data);
   const { isFetching, data: ships } = useAppSelector((state) => state.ships);
-  console.log(isFetching);
+
 
   const maxPages = Math.ceil(count / CONSTANTS.OBJECTS_PER_PAGES);
   const dispatch = useAppDispatch();
@@ -93,15 +39,15 @@ const Home = () => {
   ) => {
     return heroes?.map((hero) => {
       const heroFilms = hero.films
-        ?.map((filmId) => films?.find((film) => film.episode_id === filmId))
-        .filter(Boolean) as Film[]; // Приводим к типу Film[]
+        ?.map((filmId:number) => films?.find((film) => film.episode_id === filmId))
+        .filter(Boolean) as Film[]; // Cast to type Film[]
 
       const validStarships = Array.isArray(starships) ? starships : [];
       const heroStarships = hero.starships
-        ?.map((starshipId) =>
+        ?.map((starshipId:number) =>
           validStarships?.find((ship) => ship.url.endsWith(`/${starshipId}/`))
         )
-        .filter(Boolean) as Starship[]; // Приводим к типу Starship[]
+        .filter(Boolean) as Starship[]; // Cast to type Starship[]
 
       return {
         ...hero,
@@ -111,104 +57,30 @@ const Home = () => {
     });
   };
 
-  const updatedHeroes = enrichHeroes(heroes, films, ships);
-  console.log(updatedHeroes);
-
-  const incrementPageNumber = () => {
-    if (pageNumber < maxPages) {
-      setPageNumber(pageNumber + 1);
-    }
-  };
-
-  const decrementPageNumber = () => {
-    if (pageNumber > 1) {
-      setPageNumber(pageNumber - 1);
-    }
-  };
-
- 
+  const updatedHeroes: EnrichedHero[] = enrichHeroes(heroes, films, ships);
 
   return (
     <>
       <Header />
       {isFetching ? (
-        <Box sx={{ display: 'flex',
-          justifyContent: 'center', // Центрируем по горизонтали
-          alignItems: 'center', // Центрируем по вертикали
-          height: '100vh',}}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center', 
+            alignItems: 'center',
+            height: '100vh',
+          }}
+        >
           <CircularProgress />
           <span style={{ marginLeft: '10px' }}>Loading...</span>
         </Box>
       ) : (
-        <Stack sx={{ gap: '10px', marginTop: '80px' }}>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Films</TableCell>
-                  <TableCell>Ships</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {updatedHeroes && updatedHeroes.length > 0 ? (
-                  updatedHeroes.map((hero, i) => (
-                    <TableRow key={i}>
-                      <TableCell>{hero.name}</TableCell>
-                      <TableCell>
-                        {hero.heroFilms?.length > 0 ? (
-                          hero.heroFilms.map((film) => (
-                            <div key={film.id}>{film.title}</div>
-                          ))
-                        ) : (
-                          <div>No Films</div>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {' '}
-                        {hero.heroStarships?.length > 0 ? (
-                          hero.heroStarships.map((ship) => (
-                            <div key={ship.id}>{ship.name}</div>
-                          ))
-                        ) : (
-                          <div>No Ships</div>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={3}>No heroes found</TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <Stack
-            sx={{
-              flexDirection: 'row',
-              gap: '30px',
-              margin: 'auto',
-              alignItems: 'center',
-            }}
-          >
-            <Button
-              variant="contained"
-              sx={btnStyle}
-              onClick={decrementPageNumber}
-            >
-              Previous
-            </Button>
-            {pageNumber}
-            <Button
-              variant="contained"
-              sx={btnStyle}
-              onClick={incrementPageNumber}
-            >
-              Next
-            </Button>
-          </Stack>
-        </Stack>
+        <HeroesList
+          updatedHeroes={updatedHeroes}
+          pageNumber={pageNumber}
+          setPageNumber={setPageNumber}
+          maxPages={maxPages}
+        />
       )}
     </>
   );
