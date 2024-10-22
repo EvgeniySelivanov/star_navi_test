@@ -1,10 +1,11 @@
-import { createAsyncThunk, createSlice,PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import * as restController from '../../api/restController';
 import { pendingReducer, rejectedReducer } from '../../utils/store';
 
-interface ShipsState{
+interface ShipsState {
   data: any;
   error: string | null;
+  isFetching: boolean;
 }
 interface GetResponse {
   data: any;
@@ -13,15 +14,16 @@ interface GetResponse {
 
 const SHIPS_SLICE_NAME = 'ships';
 const initialState: ShipsState = {
-  data:{},
+  data: {},
   error: null,
+  isFetching: false,
 };
 
 export const getShips = createAsyncThunk<GetResponse, string>(
   `${SHIPS_SLICE_NAME}/getShips`,
   async (address: string, thunkAPI) => {
     try {
-      const { data, status} = await restController.getShips(address);
+      const { data, status } = await restController.getShips(address);
       const result: GetResponse = { data, status };
       return result;
     } catch (error: any) {
@@ -33,10 +35,14 @@ export const getShips = createAsyncThunk<GetResponse, string>(
 );
 const extraReducers = (builder: any) => {
   builder.addCase(getShips.pending, pendingReducer);
-  builder.addCase(getShips.fulfilled, (state:ShipsState, action: PayloadAction<GetResponse>) => {
-    state.data = action.payload.data;
-    state.error = null;
-  });
+  builder.addCase(
+    getShips.fulfilled,
+    (state: ShipsState, action: PayloadAction<GetResponse>) => {
+      state.data = action.payload.data;
+      state.error = null;
+      state.isFetching = false;
+    }
+  );
   builder.addCase(getShips.rejected, rejectedReducer);
 };
 
