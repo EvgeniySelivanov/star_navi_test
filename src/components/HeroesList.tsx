@@ -57,20 +57,19 @@ const HeroesList: React.FC<HeroesListProps> = ({
           <TableHead>
             <TableRow>
               <TableCell sx={{fontSize:'20px',fontWeight:'bold'}}>Name</TableCell>
-              <TableCell sx={{fontSize:'20px',fontWeight:'bold'}}>Films</TableCell>
-              <TableCell sx={{fontSize:'20px',fontWeight:'bold'}}>Ships</TableCell>
+              <TableCell sx={{fontSize:'20px',fontWeight:'bold'}}>Films&Ships</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
           {updatedHeroes && updatedHeroes.length > 0 ? (
     updatedHeroes.map((hero, i) => (
       <TableRow key={i} onClick={() => setSelectedHero(hero)} style={{ cursor: 'pointer' }}>
-        <TableCell sx={{ fontSize: '14px', fontWeight: 'bold' }}>{hero.name}</TableCell>
-        <TableCell sx={{ fontSize: '14px', fontWeight: 'bold' }}>
+        <TableCell sx={{ fontSize: '16px', fontWeight: 'bold',color:'#e25b45' }}>{hero.name}</TableCell>
+        <TableCell >
           {hero.heroFilms?.length > 0 ? (
             hero.heroFilms.map((film) => (
               <div key={film.id}>
-                {film.title}
+                <p style={{fontSize:'16px',fontWeight:600,color:'green'}}>{film.title}</p>
                 {/* Отображаем корабли для каждого фильма */}
                 {hero.heroStarships?.length > 0 ? (
                   <ul>

@@ -1,5 +1,11 @@
-import React from 'react';
-import ReactFlow, { Background, Controls, MiniMap, Node, Edge } from 'reactflow';
+import React, { useState } from 'react';
+import ReactFlow, {
+  Background,
+  Controls,
+  MiniMap,
+  Node,
+  Edge,
+} from 'reactflow';
 import 'reactflow/dist/style.css';
 import { EnrichedHero } from '../interfaces';
 
@@ -8,6 +14,8 @@ interface HeroGraphProps {
 }
 
 const HeroGraph: React.FC<HeroGraphProps> = ({ hero }) => {
+  const [selectedFilm, setSelectedFilm] = useState<string | null>(null); // Для хранения выбранного фильма
+
   if (!hero) return null;
 
   // Создаем узлы для героя, фильмов и кораблей
@@ -32,29 +40,42 @@ const HeroGraph: React.FC<HeroGraphProps> = ({ hero }) => {
     })),
   ];
 
-  // Создаем связи между узлами (связываем героя с фильмами и кораблями)
+  // Связываем героя с фильмами
   const edges: Edge[] = [
-    // Связываем героя с фильмами
     ...hero.heroFilms.map((film) => ({
       id: `hero-${hero.name}-film-${film.title}`,
       source: `hero-${hero.name}`,
       target: `film-${film.title}`,
       type: 'default',
     })),
-    // Связываем фильмы с соответствующими кораблями
-    ...hero.heroFilms.flatMap((film) => (
-      hero.heroStarships.map((starship) => ({
-        id: `film-${film.title}-starship-${starship.name}`,
-        source: `film-${film.title}`,
-        target: `starship-${starship.name}`,
-        type: 'default',
-      }))
-    )),
   ];
+
+  // Связываем корабли с фильмом только при выборе фильма
+  const filmEdges: Edge[] =
+    selectedFilm
+      ? hero.heroStarships.map((starship) => ({
+          id: `film-${selectedFilm}-starship-${starship.name}`,
+          source: `film-${selectedFilm}`,
+          target: `starship-${starship.name}`,
+          type: 'default',
+        }))
+      : [];
+
+  // Обработчик клика на узел фильма
+  const onNodeClick = (_: React.MouseEvent, node: Node) => {
+    if (node.id.startsWith('film-')) {
+      const filmTitle = node.id.replace('film-', '');
+      setSelectedFilm(filmTitle); // Устанавливаем выбранный фильм
+    }
+  };
 
   return (
     <div style={{ height: '500px', width: '100%' }}>
-      <ReactFlow nodes={nodes} edges={edges}>
+      <ReactFlow
+        nodes={nodes}
+        edges={[...edges, ...filmEdges]} // Добавляем связи к кораблям только для выбранного фильма
+        onNodeClick={onNodeClick} // Добавляем обработчик клика на узел
+      >
         <MiniMap />
         <Controls />
         <Background />
