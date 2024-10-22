@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
+
 import { getHeroes } from '../store/slices/heroesSlice';
 import { getFilms } from '../store/slices/filmsSlice';
 import { getShips } from '../store/slices/shipsSlice';
 import {
   Box,
+  Stack,
   CircularProgress,
 } from '@mui/material';
 import { EnrichedHero,Hero,Film,Starship } from '../interfaces';
@@ -13,9 +15,13 @@ import CONSTANTS from '../constants';
 import HeroesList from '../components/HeroesList';
 const Home = () => {
   const [pageNumber, setPageNumber] = useState(1);
+
   const { count, results: heroes } = useAppSelector(
     (state) => state.heroes.data
   );
+
+
+  
   const { results: films } = useAppSelector((state) => state.films.data);
   const { isFetching, data: ships } = useAppSelector((state) => state.ships);
 
@@ -75,12 +81,15 @@ const Home = () => {
           <span style={{ marginLeft: '10px' }}>Loading...</span>
         </Box>
       ) : (
-        <HeroesList
-          updatedHeroes={updatedHeroes}
-          pageNumber={pageNumber}
-          setPageNumber={setPageNumber}
-          maxPages={maxPages}
-        />
+        <Stack mt='80px'>
+          <Box component='h1' sx={{textAlign:'center'}}>Heroes list</Box>
+          <HeroesList
+            updatedHeroes={updatedHeroes}
+            pageNumber={pageNumber}
+            setPageNumber={setPageNumber}
+            maxPages={maxPages}
+          />
+        </Stack>
       )}
     </>
   );

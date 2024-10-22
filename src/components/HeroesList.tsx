@@ -41,7 +41,7 @@ const HeroesList: React.FC<HeroesListProps> = ({
   };
 
   return (
-    <Stack sx={{ gap: '10px', marginTop: '80px',marginBottom:'80px' }}>
+    <Stack sx={{ gap: '10px', marginTop: '20px',marginBottom:'80px' }}>
       <TableContainer component={Paper}  
       sx={{ 
           height: '70vh',
