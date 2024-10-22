@@ -3,26 +3,26 @@ import * as restController from '../../api/restController';
 import { pendingReducer, rejectedReducer } from '../../utils/store';
 
 interface FilmsState{
-  films:number[],
+  data: any;
   error: string | null;
 }
-interface GetHeroesResponse {
-  data: number[];
+interface GetResponse {
+  data: any;
   status: number;
 }
 const FILMS_SLICE_NAME = 'films';
 
 const initialState: FilmsState = {
-  films: [],
+  data:{},
   error: null,
 };
 
-export const getFilms = createAsyncThunk<GetHeroesResponse, string>(
+export const getFilms = createAsyncThunk<GetResponse, string>(
   `${FILMS_SLICE_NAME}/getFilms`,
   async (address: string, thunkAPI) => {
     try {
       const { data, status} = await restController.getInfo(address);
-      const result: GetHeroesResponse = { data, status };
+      const result: GetResponse = { data, status };
       return result;
     } catch (error: any) {
       console.log(error);
@@ -33,8 +33,8 @@ export const getFilms = createAsyncThunk<GetHeroesResponse, string>(
 );
 const extraReducers = (builder: any) => {
   builder.addCase(getFilms.pending, pendingReducer);
-  builder.addCase(getFilms.fulfilled, (state:FilmsState, action: PayloadAction<GetHeroesResponse>) => {
-    state.films = action.payload.data;
+  builder.addCase(getFilms.fulfilled, (state:FilmsState, action: PayloadAction<GetResponse>) => {
+    state.data = action.payload.data;
     state.error = null;
   });
   builder.addCase(getFilms.rejected, rejectedReducer);

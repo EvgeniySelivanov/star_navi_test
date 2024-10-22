@@ -10,6 +10,7 @@ const styles = {
   justifyContent: 'flex-end',
   flexDirection: 'row',
   alignItems: 'center',
+  position:'fixed'
 };
 const Header = () => {
   return (
