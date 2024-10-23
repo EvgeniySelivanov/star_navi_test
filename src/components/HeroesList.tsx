@@ -128,7 +128,7 @@ const HeroesList: React.FC<HeroesListProps> = ({
         sx={{
           flexDirection: 'row',
           gap: '30px',
-          margin: 'auto',
+          margin: '0px auto 40px auto',
           alignItems: 'center',
         }}
       >
