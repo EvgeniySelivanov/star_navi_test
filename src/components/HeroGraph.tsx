@@ -138,7 +138,7 @@ const HeroGraph: React.FC<HeroGraphProps> = ({ hero }) => {
           <Background />
         </ReactFlow>
       </div>
-      <div style={{ width: '300px', padding: '10px', borderLeft: '1px solid #ccc' }}>
+      <div style={{ maxWidth: '150px', padding: '10px', borderLeft: '1px solid #ccc' }}>
         {renderSidebarInfo()}
       </div>
     </div>
