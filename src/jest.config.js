@@ -1,13 +1,13 @@
 module.exports = {
-  preset: 'ts-jest', // Используйте ts-jest для обработки TypeScript
-  testEnvironment: 'jsdom', // Используйте jsdom для тестов, которые зависят от DOM
+  preset: 'ts-jest', // Use ts-jest to process TypeScript
+  testEnvironment: 'jsdom', // Use jsdom for tests that depend on the DOM
   moduleNameMapper: {
-    '\\.(css|less|scss)$': 'identity-obj-proxy', // Мок для стилей, если необходимо
+    '\\.(css|less|scss)$': 'identity-obj-proxy', //Mock for styles if needed
   },
   transform: {
-    '^.+\\.tsx?$': 'ts-jest', // Преобразование TypeScript файлов
+    '^.+\\.tsx?$': 'ts-jest', // Converting TypeScript files
   },
   transformIgnorePatterns: [
-    "/node_modules/(?!axios)" // Позволяет обрабатывать axios и другие модули, если необходимо
+    "/node_modules/(?!axios)" //Allows handling of axios and other modules if needed
   ],
 };
