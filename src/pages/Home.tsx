@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from '../utils/hooks';
 import CONSTANTS from '../constants';
 import HeroesList from '../components/HeroesList';
 const Home = () => {
+  // Get page number from URL or set 1 as default
   const initialPageNumber = Number(new URLSearchParams(window.location.search).get('page')) || 1;
   const [pageNumber, setPageNumber] = useState(initialPageNumber);
 
@@ -32,12 +33,12 @@ const Home = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    // Обновление URL при изменении номера страницы
+    //Update URL when page number changes
     const params = new URLSearchParams(window.location.search);
     params.set('page', pageNumber.toString());
     window.history.pushState({}, '', `${window.location.pathname}?${params.toString()}`);
   }, [pageNumber]);
-  
+
   const enrichHeroes = (
     heroes: Hero[],
     films: Film[],
