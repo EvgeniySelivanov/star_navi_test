@@ -1,5 +1,5 @@
 export interface Hero {
-  birth_year: string;
+  birthYear: string;
   films: number[];
   gender: string;
   height: string;
@@ -12,15 +12,15 @@ export interface Hero {
 export interface Film {
   id: number;
   director: string;
-  episode_id: number;
-  release_date:string;
+  episodeId: number;
+  releaseDate:string;
   producer:string;
   title: string;
 }
 
 export interface Starship {
   id: number;
-  hyperdrive_rating:string;
+  hyperdriveRating:string;
   manufacturer:string;
   name: string;
   model: string;

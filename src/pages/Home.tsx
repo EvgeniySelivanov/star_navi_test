@@ -47,7 +47,7 @@ const Home = () => {
     return heroes?.map((hero) => {
       const heroFilms = hero.films
         ?.map((filmId: number) =>
-          films?.find((film) => film.episode_id === filmId)
+          films?.find((film) => film.episodeId === filmId)
         )
         .filter(Boolean) as Film[]; // Cast to type Film[]
 

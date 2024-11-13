@@ -88,7 +88,7 @@ const HeroGraph: React.FC<HeroGraphProps> = ({ hero }) => {
           <h3>Hero: {selectedItem.name}</h3>
           <p>Number of films: {selectedItem.heroFilms.length}</p>
           <p>Number of starships: {selectedItem.heroStarships.length}</p>
-          <p>Birth year: {selectedItem.birth_year}</p>
+          <p>Birth year: {selectedItem.birthYear}</p>
           <p>Height: {selectedItem.height}</p>
           <p>Gender: {selectedItem.gender}</p>
 
@@ -101,8 +101,8 @@ const HeroGraph: React.FC<HeroGraphProps> = ({ hero }) => {
       return (
         <>
           <h3>Film: {selectedItem.title}</h3>
-          <p>Episode: {selectedItem.episode_id}</p>
-          <p>Release date: {selectedItem.release_date}</p>
+          <p>Episode: {selectedItem.episodeId}</p>
+          <p>Release date: {selectedItem.releaseDate}</p>
           <p>Director: {selectedItem.director}</p>
           <p>Producer: {selectedItem.producer}</p>
         </>
@@ -116,7 +116,7 @@ const HeroGraph: React.FC<HeroGraphProps> = ({ hero }) => {
           <h3>Starship: {selectedItem.name}</h3>
           <p>Model: {selectedItem.model}</p>
           <p>Manufacturer: {selectedItem.manufacturer}</p>
-          <p>Hyperdrive rating: {selectedItem.hyperdrive_rating}</p>
+          <p>Hyperdrive rating: {selectedItem.hyperdriveRating}</p>
         </>
       );
     }

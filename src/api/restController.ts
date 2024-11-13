@@ -1,17 +1,25 @@
 import axios from 'axios';
 import CONSTANTS from '../constants';
-const http = axios.create({
+import { toCamelCase } from '../utils/strings';
+ const http = axios.create({
   baseURL: CONSTANTS.BASE_URL,
 });
+
+http.interceptors.response.use(
+  (response) => {
+    response.data = toCamelCase(response.data); // Преобразуем ответ
+    return response;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 interface GetInfoResponse {
   data: any[];
   status: number;
 }
-interface StarshipResponse {
-  results: any[];
-  next: string | null;
-}
+
 export const getInfo = async (address: string): Promise<GetInfoResponse> => {
   try {
     const response = await http.get(`${address}`, {
