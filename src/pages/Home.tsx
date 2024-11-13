@@ -9,7 +9,8 @@ import { useAppDispatch, useAppSelector } from '../utils/hooks';
 import CONSTANTS from '../constants';
 import HeroesList from '../components/HeroesList';
 const Home = () => {
-  const [pageNumber, setPageNumber] = useState(1);
+  const initialPageNumber = Number(new URLSearchParams(window.location.search).get('page')) || 1;
+  const [pageNumber, setPageNumber] = useState(initialPageNumber);
 
   const { count, results: heroes } = useAppSelector(
     (state) => state.heroes.data
@@ -30,6 +31,13 @@ const Home = () => {
     dispatch(getShips('/starships/'));
   }, [dispatch]);
 
+  useEffect(() => {
+    // Обновление URL при изменении номера страницы
+    const params = new URLSearchParams(window.location.search);
+    params.set('page', pageNumber.toString());
+    window.history.pushState({}, '', `${window.location.pathname}?${params.toString()}`);
+  }, [pageNumber]);
+  
   const enrichHeroes = (
     heroes: Hero[],
     films: Film[],
